@@ -10,6 +10,10 @@ public class Operator {
 				run = new SubnetCalculator();
 			}
 			catch (IllegalArgumentException Ill){
+				System.out.println("127.0.0.0 IP addresses are reserved for loopback");
+				x = 0;
+			}
+			catch (Exception e) {
 				System.out.println("You have endered an invalid IP Address");
 				x = 0;
 			}
@@ -24,13 +28,20 @@ public class Operator {
 		
 		System.out.format("%-15s%-20s%-20s%-20s%-20s\n","Subnet #", "Subnet ID", "First Host IP", "Last Host IP", "BroadcastAddress");
 		
+		
 		//Sets the rawIP variable to the rawClassAddress value so that we can iterate through all the subnets
+		int temp = run.rawIP;
+		int temp2 = 0;
 		run.rawIP = run.rawClassAddress;
 		
 		for(int i = 0; i < run.numberOfSubnets(); i++) {
-			System.out.format("%-15s%-20s%-20s%-20s%-20s\n", "#" + (i + 1), run.subnetID(), run.firstHostIP(), run.lastHostIP(), run.broadcastAddress());
-			
+			System.out.format("%-15s%-20s%-20s%-20s%-20s\n", "#" + (i), run.subnetID(), run.firstHostIP(), run.lastHostIP(), run.broadcastAddress());
+			if (temp > run.rawNetAddress && temp < (run.rawNetAddress + (1 << run.hostBits))) {
+				temp2 = i;
+			}
 			run.rawIP += (1 << run.hostBits);
+			
 		}
+		System.out.println("\nYour IP is in the subnet " + temp2);
 	}
 }

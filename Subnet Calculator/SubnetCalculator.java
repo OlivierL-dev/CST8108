@@ -46,7 +46,7 @@ public class SubnetCalculator {
 	 * Constructor that creates the raw ip and submask values
 	 * @param ipAddress The IP address to be calculated
 	 */
-	public SubnetCalculator() throws IllegalArgumentException {
+	public SubnetCalculator() throws IllegalArgumentException, Exception {
 		System.out.println("Please enter the address you are calculating");
 		String userInput = input.next();
 		
@@ -56,21 +56,24 @@ public class SubnetCalculator {
 		String[] holder =  userInput.split("[/]");
 		String[] ipPortion =  holder[0].split("[.]");
 		if(holder.length != 2) {
-			throw new IllegalArgumentException();
+			throw new Exception();
 		}
 		if(ipPortion.length != 4) {
-			throw new IllegalArgumentException();
+			throw new Exception();
 		}
 		
 		int CIDR = Integer.parseInt(holder[1]);
 		if(CIDR < 0 || CIDR > 30) {
-			throw new IllegalArgumentException();
+			throw new Exception();
 		}
 		
 		int bitShift = 24;
 		for(String s : ipPortion) {
 			int octetValue = Integer.parseInt(s);
 			if(octetValue > 255 || octetValue < 0) {
+				throw new Exception();
+			}
+			if(octetValue == 127) {
 				throw new IllegalArgumentException();
 			}
 
@@ -161,7 +164,7 @@ public class SubnetCalculator {
 	 * Gets the value of the class ip address
 	 * @return The class ip address
 	 */
-	public String ipClass() {
+	public String ipClass() { 
 		int temp = (rawIP >>> 24);
 		String cls = null;
 		if(temp <= 126) {
